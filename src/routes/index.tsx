@@ -44,6 +44,13 @@ const mockResult: VerificationResult = {
   limitations: "This assessment is based on publicly available evidence retrieved at the time of checking. Fuel subsidy policy in Nigeria is subject to change. Always verify with primary government sources before acting on this information.",
 };
 
+const verdictLabels: Record<Assessment, string> = {
+  TRUE: "True",
+  FALSE: "False",
+  MISLEADING: "Misleading",
+  UNVERIFIABLE: "Unverifiable",
+};
+
 const verdictClasses: Record<Assessment, string> = {
   TRUE: "border-verdict-true-foreground bg-verdict-true text-verdict-true-foreground",
   FALSE: "border-verdict-false-foreground bg-verdict-false text-verdict-false-foreground",
@@ -202,7 +209,7 @@ function Results({ result, onReset }: { result: VerificationResult; onReset: () 
   return (
     <div>
       <div className={`border-l-4 px-6 py-5 ${verdictClasses[result.assessment]}`}>
-        <p className="font-display text-[28px] leading-tight">{result.assessment}</p>
+        <p className="font-display text-[28px] leading-tight">{verdictLabels[result.assessment]}</p>
         <p className="mt-2 text-sm text-secondary-foreground/80">Based on evidence retrieved from Nigerian sources</p>
       </div>
 
@@ -222,7 +229,7 @@ function Results({ result, onReset }: { result: VerificationResult; onReset: () 
               ) : <p className="mt-1 text-[15px] text-foreground">{source.title}</p>}
               {source.published_at ? <p className="mt-1 text-xs text-muted-foreground/70">Published {source.published_at}</p> : null}
               <p className="mt-2 text-sm italic leading-6 text-secondary-foreground/80">{source.relevance}</p>
-              <p className="mt-1 text-sm leading-6 text-secondary-foreground/80">{source.evidence_summary}</p>
+              <p className="mt-1 text-sm leading-6 text-[#4A5568]">{source.evidence_summary}</p>
             </article>
           ))}
         </div>

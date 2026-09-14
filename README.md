@@ -198,3 +198,26 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Backend
+
+The verification API lives in the `backend` folder and runs separately from the frontend.
+
+Install:
+
+    cd backend
+    pip install -r requirements.txt
+
+Run:
+
+    uvicorn main:app --reload --port 8000
+
+Environment variables (copy `.env.example` to `.env`):
+
+ANTHROPIC_API_KEY, required for claim normalisation and assessment.
+
+SERPER_API_KEY, optional in development. When it is absent the retriever returns a small fallback list of typical Nigerian civic sources so the pipeline keeps working.
+
+ALLOWED_ORIGINS, comma separated list of origins for CORS. Defaults to `*` in development.
+
+Confirm the service is running by requesting GET /health, which returns {"status": "ok"}. The main endpoint is POST /api/verify.
