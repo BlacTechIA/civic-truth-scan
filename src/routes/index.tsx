@@ -91,16 +91,17 @@ function CivicCheck() {
     setError(null);
     setResult(null);
     setIsLoading(true);
-    window.setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
 
     try {
       await new Promise((resolve) => window.setTimeout(resolve, 2500));
       setResult(mockResult);
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch {
       setError("We could not retrieve evidence for this claim. Please try rephrasing or check your connection.");
     } finally {
       setIsLoading(false);
     }
+
   };
 
   const reset = () => {
