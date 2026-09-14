@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Paperclip, X } from "lucide-react";
-import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
+import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
 
 import { Button } from "../components/button";
 
@@ -75,17 +75,6 @@ function CivicCheck() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
 
-  // Temporary: auto-trigger mock verification on page load for review.
-  useEffect(() => {
-    setError(null);
-    setResult(null);
-    setIsLoading(true);
-    window.setTimeout(() => {
-      setResult(mockResult);
-      setIsLoading(false);
-    }, 2500);
-  }, []);
-
   const chooseFile = (event: ChangeEvent<HTMLInputElement>) => {
     setAttachedFile(event.target.files?.[0] ?? null);
     setValidationError("");
@@ -101,11 +90,11 @@ function CivicCheck() {
     setError(null);
     setResult(null);
     setIsLoading(true);
-    window.setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
 
     try {
       await new Promise((resolve) => window.setTimeout(resolve, 2500));
       setResult(mockResult);
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch {
       setError("We could not retrieve evidence for this claim. Please try rephrasing or check your connection.");
     } finally {
