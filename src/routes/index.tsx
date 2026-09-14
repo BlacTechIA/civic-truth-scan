@@ -75,7 +75,6 @@ function CivicCheck() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
 
-
   const chooseFile = (event: ChangeEvent<HTMLInputElement>) => {
     setAttachedFile(event.target.files?.[0] ?? null);
     setValidationError("");
