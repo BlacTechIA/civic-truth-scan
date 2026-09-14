@@ -75,16 +75,6 @@ function CivicCheck() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
 
-  // Temporary: auto-trigger mock verification on page load for review.
-  useEffect(() => {
-    setError(null);
-    setResult(null);
-    setIsLoading(true);
-    window.setTimeout(() => {
-      setResult(mockResult);
-      setIsLoading(false);
-    }, 2500);
-  }, []);
 
   const chooseFile = (event: ChangeEvent<HTMLInputElement>) => {
     setAttachedFile(event.target.files?.[0] ?? null);
