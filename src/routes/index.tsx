@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Paperclip, X } from "lucide-react";
-import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 
 import { Button } from "../components/button";
 
