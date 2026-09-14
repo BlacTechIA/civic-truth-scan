@@ -70,6 +70,7 @@
   --color-verdict-misleading-foreground: var(--verdict-misleading-foreground);
   --color-verdict-unverifiable: var(--verdict-unverifiable);
   --color-verdict-unverifiable-foreground: var(--verdict-unverifiable-foreground);
+  --color-header-tag: var(--header-tag);
 }
 
 :root {
@@ -94,6 +95,7 @@
   --border: oklch(0.929 0.013 255.5);
   --input: oklch(0.929 0.013 255.5);
   --ring: oklch(0.515 0.128 154.8);
+  --header-tag: oklch(0.709 0.079 157.4);
   --verdict-true: oklch(0.956 0.028 155.1);
   --verdict-true-foreground: oklch(0.515 0.128 154.8);
   --verdict-false: oklch(0.971 0.013 17.4);

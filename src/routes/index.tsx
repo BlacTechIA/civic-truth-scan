@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Paperclip, X } from "lucide-react";
-import { useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
 
 import { Button } from "../components/button";
 
@@ -119,7 +119,7 @@ function CivicCheck() {
       <header className="fixed inset-x-0 top-0 z-20 bg-primary">
         <div className="mx-auto flex h-14 max-w-[1100px] items-center justify-between gap-4 px-4 sm:px-8 lg:px-12">
           <span className="font-display text-xl font-normal text-primary-foreground">CivicCheck NG</span>
-          <span className="text-right text-[13px] text-[#6BAE8A]">Transparency and Accountability</span>
+          <span className="text-right text-[13px] text-header-tag">Transparency and Accountability</span>
         </div>
       </header>
 
@@ -240,7 +240,7 @@ function Results({ result, onReset }: { result: VerificationResult; onReset: () 
   );
 }
 
-function ResultSection({ title, children }: { title: string; children: React.ReactNode }) {
+function ResultSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mt-10">
       <h2 className="font-display text-[22px] font-normal text-foreground">{title}</h2>
