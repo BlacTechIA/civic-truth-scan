@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Paperclip, X } from "lucide-react";
-import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 
 import { Button } from "../components/button";
 
@@ -74,6 +74,17 @@ function CivicCheck() {
   const [validationError, setValidationError] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
+
+  // Temporary: auto-trigger mock verification on page load for review.
+  useEffect(() => {
+    setError(null);
+    setResult(null);
+    setIsLoading(true);
+    window.setTimeout(() => {
+      setResult(mockResult);
+      setIsLoading(false);
+    }, 2500);
+  }, []);
 
   const chooseFile = (event: ChangeEvent<HTMLInputElement>) => {
     setAttachedFile(event.target.files?.[0] ?? null);
