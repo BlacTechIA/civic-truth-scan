@@ -100,7 +100,6 @@ function CivicCheck() {
     } finally {
       setIsLoading(false);
     }
-
   };
 
   const reset = () => {
