@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Paperclip, X } from "lucide-react";
-import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
+
 
 import { Button } from "../components/button";
 
@@ -79,8 +80,21 @@ function CivicCheck() {
   const [result, setResult] = useState<VerificationResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [validationError, setValidationError] = useState("");
+  const [lowBandwidth, setLowBandwidth] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const resultsRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setLowBandwidth(window.localStorage.getItem("civiccheck-low-bandwidth") === "true");
+  }, []);
+
+  const toggleLowBandwidth = () => {
+    setLowBandwidth((previous) => {
+      const next = !previous;
+      window.localStorage.setItem("civiccheck-low-bandwidth", String(next));
+      return next;
+    });
+  };
 
   const chooseFile = (event: ChangeEvent<HTMLInputElement>) => {
     setAttachedFile(event.target.files?.[0] ?? null);
@@ -98,29 +112,32 @@ function CivicCheck() {
     setResult(null);
     setIsLoading(true);
 
+    const apiBaseUrl = (import.meta.env["VITE_API_BASE_URL"] as string | undefined) ?? "";
+
     try {
-      const apiBaseUrl = import.meta.env["VITE_API_BASE_URL"] as string | undefined;
-      if (!apiBaseUrl && import.meta.env.DEV) {
-        await new Promise((resolve) => window.setTimeout(resolve, 2500));
-        setResult(mockResult);
-      } else {
-        const response = await fetch(`${apiBaseUrl ?? "http://localhost:8000"}/api/verify`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ claim: claimText, has_image: false }),
-        });
-        if (!response.ok) {
-          throw new Error(`Verification request failed with status ${response.status}`);
-        }
-        setResult((await response.json()) as VerificationResult);
+      const response = await fetch(`${apiBaseUrl}/api/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ claim: claimText, has_image: !!attachedFile }),
+      });
+      if (!response.ok) {
+        throw new Error(`Verification request failed with status ${response.status}`);
       }
+      setResult((await response.json()) as VerificationResult);
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch {
-      setError("We could not retrieve evidence for this claim. Please try rephrasing or check your connection.");
+      if (import.meta.env.DEV) {
+        await new Promise((resolve) => window.setTimeout(resolve, 2500));
+        setResult(mockResult);
+        resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        setError("We could not retrieve evidence for this claim. Please try rephrasing or check your connection.");
+      }
     } finally {
       setIsLoading(false);
     }
   };
+
 
   const reset = () => {
     setClaimText("");
