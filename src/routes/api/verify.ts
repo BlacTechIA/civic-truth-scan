@@ -57,7 +57,15 @@ JSON structure:
   "limitations": "one sentence on the limits of this assessment"
 }`;
 
-async function callAnthropic(system: string, userMessage: string, maxTokens: number) {
+type ContentBlock =
+  | { type: "text"; text: string }
+  | { type: "image"; source: { type: "base64"; media_type: string; data: string } };
+
+async function callAnthropic(
+  system: string,
+  userMessage: string | ContentBlock[],
+  maxTokens: number,
+) {
   const apiKey = process.env["ANTHROPIC_API_KEY"];
   if (!apiKey) throw new Error("missing_key");
 
@@ -86,6 +94,7 @@ async function callAnthropic(system: string, userMessage: string, maxTokens: num
   if (!text) throw new Error("anthropic_empty");
   return text;
 }
+
 
 async function searchEvidence(normalizedClaim: string): Promise<Evidence[]> {
   try {
@@ -141,14 +150,16 @@ export const Route = createFileRoute("/api/verify")({
       OPTIONS: () => new Response(null, { status: 200, headers: corsHeaders }),
       POST: async ({ request }) => {
         let claim = "";
+        let imageBase64 = "";
         try {
-          const body = (await request.json()) as { claim?: string };
+          const body = (await request.json()) as { claim?: string; image_base64?: string };
           claim = (body.claim ?? "").trim();
+          imageBase64 = (body.image_base64 ?? "").trim();
         } catch {
           claim = "";
         }
 
-        if (!claim) {
+        if (!claim && !imageBase64) {
           return new Response(JSON.stringify({ error: "A claim is required." }), {
             status: 400,
             headers: jsonHeaders,
@@ -157,10 +168,28 @@ export const Route = createFileRoute("/api/verify")({
 
         let normalizedClaim: string;
         try {
-          normalizedClaim = await callAnthropic(NORMALIZER_PROMPT, claim, 200);
+          if (imageBase64) {
+            normalizedClaim = await callAnthropic(
+              NORMALIZER_PROMPT,
+              [
+                {
+                  type: "image",
+                  source: { type: "base64", media_type: "image/jpeg", data: imageBase64 },
+                },
+                {
+                  type: "text",
+                  text: "Extract the main civic claim or news headline from this image. Return only the claim as a single plain sentence.",
+                },
+              ],
+              200,
+            );
+          } else {
+            normalizedClaim = await callAnthropic(NORMALIZER_PROMPT, claim, 200);
+          }
         } catch {
           return unavailable();
         }
+
 
         const evidence = await searchEvidence(normalizedClaim);
 

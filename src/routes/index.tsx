@@ -101,6 +101,17 @@ function CivicCheck() {
     setValidationError("");
   };
 
+  const readFileAsBase64 = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const value = typeof reader.result === "string" ? reader.result : "";
+        resolve(value.includes(",") ? value.slice(value.indexOf(",") + 1) : value);
+      };
+      reader.onerror = () => reject(new Error("file_read_failed"));
+      reader.readAsDataURL(file);
+    });
+
   const checkClaim = async () => {
     if (!claimText.trim() && !attachedFile) {
       setValidationError("Please enter a claim or attach a screenshot to continue");
@@ -115,10 +126,15 @@ function CivicCheck() {
     const apiBaseUrl = (import.meta.env["VITE_API_BASE_URL"] as string | undefined) ?? "";
 
     try {
+      const imageBase64 = attachedFile ? await readFileAsBase64(attachedFile) : null;
       const response = await fetch(`${apiBaseUrl}/api/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ claim: claimText, has_image: !!attachedFile }),
+        body: JSON.stringify({
+          claim: claimText,
+          has_image: !!attachedFile,
+          ...(imageBase64 ? { image_base64: imageBase64 } : {}),
+        }),
       });
       if (!response.ok) {
         throw new Error(`Verification request failed with status ${response.status}`);
@@ -137,6 +153,7 @@ function CivicCheck() {
       setIsLoading(false);
     }
   };
+
 
 
   const reset = () => {
@@ -260,7 +277,7 @@ function LoadingResults() {
 function ErrorResults({ message, onReset }: { message: string; onReset: () => void }) {
   return (
     <div className="py-8 text-center">
-      <p className="text-base leading-7 text-secondary-foreground/80">{message}</p>
+      <p className="text-base leading-7 text-[#4A5568]">{message}</p>
       <Button type="button" variant="outline" onClick={onReset} className="mt-8">Check another claim</Button>
     </div>
   );
@@ -275,10 +292,11 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
       </div>
 
       {result.assessment === "UNVERIFIABLE" ? (
-        <p className="mt-6 text-[15px] leading-[1.7] text-secondary-foreground">
+        <p className="mt-6 text-[15px] leading-[1.7] text-[#475569]">
           We could not find enough reliable evidence to assess this claim. This does not mean the claim is false. It means the available sources do not allow a confident conclusion.
         </p>
       ) : null}
+
 
       <ResultSection title="What the evidence shows"><p>{result.summary}</p></ResultSection>
       <ResultSection title="Why this assessment"><p>{result.why}</p></ResultSection>
@@ -305,7 +323,7 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
                 <a href={source.url} target="_blank" rel="noreferrer" className="mt-1 block text-[15px] text-foreground underline decoration-border underline-offset-4 hover:text-accent">{source.title}</a>
               ) : <p className="mt-1 text-[15px] text-foreground">{source.title}</p>}
               {source.published_at ? <p className="mt-1 text-xs text-muted-foreground/70">Published {source.published_at}</p> : null}
-              <p className="mt-2 text-sm italic leading-6 text-secondary-foreground/80">{source.relevance}</p>
+              <p className="mt-2 text-sm italic leading-6 text-[#4A5568]">{source.relevance}</p>
               <p className="mt-1 text-sm leading-6 text-[#4A5568]">{source.evidence_summary}</p>
             </article>
           ))}
@@ -330,7 +348,8 @@ function ResultSection({ title, children }: { title: string; children: ReactNode
   return (
     <section className="mt-10">
       <h2 className="font-display text-[22px] font-normal text-foreground">{title}</h2>
-      <div className="mt-3 text-base leading-[1.7] text-secondary-foreground/80">{children}</div>
+      <div className="mt-3 text-base leading-[1.7] text-[#4A5568] [&_p]:text-[#4A5568]">{children}</div>
+
     </section>
   );
 }
