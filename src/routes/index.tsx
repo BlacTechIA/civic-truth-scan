@@ -101,6 +101,17 @@ function CivicCheck() {
     setValidationError("");
   };
 
+  const readFileAsBase64 = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const value = typeof reader.result === "string" ? reader.result : "";
+        resolve(value.includes(",") ? value.slice(value.indexOf(",") + 1) : value);
+      };
+      reader.onerror = () => reject(new Error("file_read_failed"));
+      reader.readAsDataURL(file);
+    });
+
   const checkClaim = async () => {
     if (!claimText.trim() && !attachedFile) {
       setValidationError("Please enter a claim or attach a screenshot to continue");
@@ -115,10 +126,15 @@ function CivicCheck() {
     const apiBaseUrl = (import.meta.env["VITE_API_BASE_URL"] as string | undefined) ?? "";
 
     try {
+      const imageBase64 = attachedFile ? await readFileAsBase64(attachedFile) : null;
       const response = await fetch(`${apiBaseUrl}/api/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ claim: claimText, has_image: !!attachedFile }),
+        body: JSON.stringify({
+          claim: claimText,
+          has_image: !!attachedFile,
+          ...(imageBase64 ? { image_base64: imageBase64 } : {}),
+        }),
       });
       if (!response.ok) {
         throw new Error(`Verification request failed with status ${response.status}`);
@@ -137,6 +153,7 @@ function CivicCheck() {
       setIsLoading(false);
     }
   };
+
 
 
   const reset = () => {
