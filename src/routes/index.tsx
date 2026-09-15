@@ -259,7 +259,7 @@ function ErrorResults({ message, onReset }: { message: string; onReset: () => vo
   );
 }
 
-function Results({ result, onReset }: { result: VerificationResult; onReset: () => void }) {
+function Results({ result, onReset, compact }: { result: VerificationResult; onReset: () => void; compact: boolean }) {
   return (
     <div>
       <div className={`border-l-4 px-6 py-5 ${verdictClasses[result.assessment]}`}>
@@ -267,12 +267,28 @@ function Results({ result, onReset }: { result: VerificationResult; onReset: () 
         <p className="mt-2 text-sm text-secondary-foreground/80">Based on evidence retrieved from Nigerian sources</p>
       </div>
 
+      {result.assessment === "UNVERIFIABLE" ? (
+        <p className="mt-6 text-[15px] leading-[1.7] text-secondary-foreground">
+          We could not find enough reliable evidence to assess this claim. This does not mean the claim is false. It means the available sources do not allow a confident conclusion.
+        </p>
+      ) : null}
+
       <ResultSection title="What the evidence shows"><p>{result.summary}</p></ResultSection>
       <ResultSection title="Why this assessment"><p>{result.why}</p></ResultSection>
 
       <ResultSection title="Sources examined">
+        {compact ? (
+          <div className="space-y-2">
+            {result.sources.map((source) => (
+              <p key={`${source.publisher}-${source.title}`} className="text-sm leading-6 text-[#4A5568]">
+                {source.publisher}. {source.evidence_summary}
+              </p>
+            ))}
+          </div>
+        ) : (
         <div className="space-y-5">
           {result.sources.map((source) => (
+
             <article key={`${source.publisher}-${source.title}`} className="border-l-2 border-border pl-4">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="text-[13px] text-muted-foreground">{source.publisher}</p>
