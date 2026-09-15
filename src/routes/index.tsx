@@ -277,7 +277,7 @@ function LoadingResults() {
 function ErrorResults({ message, onReset }: { message: string; onReset: () => void }) {
   return (
     <div className="py-8 text-center">
-      <p className="text-base leading-7 text-secondary-foreground/80">{message}</p>
+      <p className="text-base leading-7 text-[#4A5568]">{message}</p>
       <Button type="button" variant="outline" onClick={onReset} className="mt-8">Check another claim</Button>
     </div>
   );
