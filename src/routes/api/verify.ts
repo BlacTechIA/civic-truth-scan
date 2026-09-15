@@ -57,7 +57,15 @@ JSON structure:
   "limitations": "one sentence on the limits of this assessment"
 }`;
 
-async function callAnthropic(system: string, userMessage: string, maxTokens: number) {
+type ContentBlock =
+  | { type: "text"; text: string }
+  | { type: "image"; source: { type: "base64"; media_type: string; data: string } };
+
+async function callAnthropic(
+  system: string,
+  userMessage: string | ContentBlock[],
+  maxTokens: number,
+) {
   const apiKey = process.env["ANTHROPIC_API_KEY"];
   if (!apiKey) throw new Error("missing_key");
 
@@ -86,6 +94,7 @@ async function callAnthropic(system: string, userMessage: string, maxTokens: num
   if (!text) throw new Error("anthropic_empty");
   return text;
 }
+
 
 async function searchEvidence(normalizedClaim: string): Promise<Evidence[]> {
   try {
