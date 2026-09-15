@@ -201,23 +201,17 @@ npm run dev
 
 ## Backend
 
-The verification API lives in the `backend` folder and runs separately from the frontend.
+The verification API runs inside this project. No separate service is required.
 
-Install:
+Endpoint: POST /api/verify, defined in `src/routes/api/verify.ts`. It normalises the claim, searches for evidence, then returns the structured assessment as JSON. CORS is open and OPTIONS preflight requests are handled.
 
-    cd backend
-    pip install -r requirements.txt
-
-Run:
-
-    uvicorn main:app --reload --port 8000
-
-Environment variables (copy `.env.example` to `.env`):
+Environment variables, stored as project secrets rather than in a committed file:
 
 ANTHROPIC_API_KEY, required for claim normalisation and assessment.
 
-SERPER_API_KEY, optional in development. When it is absent the retriever returns a small fallback list of typical Nigerian civic sources so the pipeline keeps working.
+SERPER_API_KEY, optional. When it is absent or the search call fails, a small fallback list of typical Nigerian civic sources is used so the pipeline keeps working.
 
-ALLOWED_ORIGINS, comma separated list of origins for CORS. Defaults to `*` in development.
+VITE_API_BASE_URL, optional. Leave it empty to call the endpoint on the same origin.
 
-Confirm the service is running by requesting GET /health, which returns {"status": "ok"}. The main endpoint is POST /api/verify.
+If the assessment cannot be completed the endpoint responds with HTTP 503 and a plain message. In development the interface falls back to the sample result so the layout can still be reviewed.
+
