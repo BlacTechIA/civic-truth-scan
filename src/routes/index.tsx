@@ -323,7 +323,7 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
                 <a href={source.url} target="_blank" rel="noreferrer" className="mt-1 block text-[15px] text-foreground underline decoration-border underline-offset-4 hover:text-accent">{source.title}</a>
               ) : <p className="mt-1 text-[15px] text-foreground">{source.title}</p>}
               {source.published_at ? <p className="mt-1 text-xs text-muted-foreground/70">Published {source.published_at}</p> : null}
-              <p className="mt-2 text-sm italic leading-6 text-secondary-foreground/80">{source.relevance}</p>
+              <p className="mt-2 text-sm italic leading-6 text-[#4A5568]">{source.relevance}</p>
               <p className="mt-1 text-sm leading-6 text-[#4A5568]">{source.evidence_summary}</p>
             </article>
           ))}
