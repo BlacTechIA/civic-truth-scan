@@ -198,13 +198,17 @@ function CivicCheck() {
             />
             <div className="mt-4 border-t border-border pt-4">
               {attachedFile ? (
-                <div className="mb-4 flex items-center justify-between gap-3 text-sm text-muted-foreground">
-                  <span className="min-w-0 truncate">{attachedFile.name}</span>
-                  <button type="button" onClick={() => setAttachedFile(null)} aria-label="Remove attached screenshot" className="shrink-0 rounded p-1 hover:text-accent focus-visible:outline-2 focus-visible:outline-ring">
-                    <X className="size-4" aria-hidden="true" />
-                  </button>
+                <div className="mb-4">
+                  <div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
+                    <span className="min-w-0 truncate">{attachedFile.name}</span>
+                    <button type="button" onClick={() => setAttachedFile(null)} aria-label="Remove attached screenshot" className="shrink-0 rounded p-1 hover:text-accent focus-visible:outline-2 focus-visible:outline-ring">
+                      <X className="size-4" aria-hidden="true" />
+                    </button>
+                  </div>
+                  <p className="mt-1 text-xs leading-5 text-muted-foreground">We will extract the text from your image and check the claim inside it.</p>
                 </div>
               ) : null}
+
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-accent">
                   <Paperclip className="size-4" aria-hidden="true" />
@@ -223,7 +227,7 @@ function CivicCheck() {
         <div className="mx-auto max-w-[720px]">
           {isLoading ? <LoadingResults /> : null}
           {error ? <ErrorResults message={error} onReset={reset} /> : null}
-          {result ? <Results result={result} onReset={reset} /> : null}
+          {result ? <Results result={result} onReset={reset} compact={lowBandwidth} /> : null}
         </div>
       </section>
     </main>
