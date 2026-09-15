@@ -230,6 +230,13 @@ function CivicCheck() {
           {result ? <Results result={result} onReset={reset} compact={lowBandwidth} /> : null}
         </div>
       </section>
+
+      <footer className="border-t border-border bg-card px-4 pb-8 pt-8">
+        <div className="mx-auto max-w-[720px]">
+          <p className="text-sm leading-6 text-[#4A5568]">Built by Anigbobi Churchill for the Andela x OSF Hackathon 2026. Transparency and Accountability track.</p>
+          <p className="mt-3 text-[13px] leading-5 text-[#9CA3AF]">civictruth.lovable.app</p>
+        </div>
+      </footer>
     </main>
   );
 }
