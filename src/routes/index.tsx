@@ -292,10 +292,11 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
       </div>
 
       {result.assessment === "UNVERIFIABLE" ? (
-        <p className="mt-6 text-[15px] leading-[1.7] text-secondary-foreground">
+        <p className="mt-6 text-[15px] leading-[1.7] text-[#475569]">
           We could not find enough reliable evidence to assess this claim. This does not mean the claim is false. It means the available sources do not allow a confident conclusion.
         </p>
       ) : null}
+
 
       <ResultSection title="What the evidence shows"><p>{result.summary}</p></ResultSection>
       <ResultSection title="Why this assessment"><p>{result.why}</p></ResultSection>
