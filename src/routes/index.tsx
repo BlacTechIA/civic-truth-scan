@@ -347,7 +347,8 @@ function ResultSection({ title, children }: { title: string; children: ReactNode
   return (
     <section className="mt-10">
       <h2 className="font-display text-[22px] font-normal text-foreground">{title}</h2>
-      <div className="mt-3 text-base leading-[1.7] text-secondary-foreground/80">{children}</div>
+      <div className="mt-3 text-base leading-[1.7] text-[#4A5568] [&_p]:text-[#4A5568]">{children}</div>
+
     </section>
   );
 }
