@@ -99,7 +99,7 @@ function CivicCheck() {
     setIsLoading(true);
 
     try {
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string | undefined;
+      const apiBaseUrl = import.meta.env["VITE_API_BASE_URL"] as string | undefined;
       if (!apiBaseUrl && import.meta.env.DEV) {
         await new Promise((resolve) => window.setTimeout(resolve, 2500));
         setResult(mockResult);
