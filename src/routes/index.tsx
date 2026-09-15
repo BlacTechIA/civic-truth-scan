@@ -156,7 +156,24 @@ function CivicCheck() {
       <header className="fixed inset-x-0 top-0 z-20 bg-primary">
         <div className="mx-auto flex h-14 max-w-[1100px] items-center justify-between gap-4 px-4 sm:px-8 lg:px-12">
           <span className="font-display text-xl font-normal text-primary-foreground">CivicCheck NG</span>
-          <span className="text-right text-[13px] text-header-tag">Transparency and Accountability</span>
+          <div className="flex items-center gap-4">
+            <span className="text-right text-[13px] text-header-tag">Transparency and Accountability</span>
+            <button
+              type="button"
+              onClick={toggleLowBandwidth}
+              aria-pressed={lowBandwidth}
+              className="inline-flex items-center gap-2 text-[13px] text-header-tag"
+            >
+              <span
+                aria-hidden="true"
+                className={`inline-flex h-4 w-8 shrink-0 items-center rounded-full border border-header-tag/60 px-0.5 transition-colors ${lowBandwidth ? "bg-header-tag/40" : "bg-transparent"}`}
+              >
+                <span className={`size-3 rounded-full bg-header-tag transition-transform ${lowBandwidth ? "translate-x-3.5" : "translate-x-0"}`} />
+              </span>
+              <span>Low bandwidth</span>
+            </button>
+          </div>
+
         </div>
       </header>
 
@@ -164,6 +181,9 @@ function CivicCheck() {
         <div className="mx-auto w-full max-w-[820px] text-center">
           <h1 id="page-heading" className="font-display text-4xl font-normal leading-tight sm:text-[52px]">What have you heard?</h1>
           <p className="mx-auto mt-5 max-w-[520px] text-lg leading-7 text-secondary-foreground/80">Paste a civic claim or upload a screenshot. We search the evidence so you can decide what to trust.</p>
+          <p className="mx-auto mt-3 max-w-[520px] text-sm leading-6 text-muted-foreground">You can submit claims in English, Pidgin, Hausa, Yoruba, or Igbo.</p>
+          <p className="mx-auto mt-2 max-w-[520px] text-xs leading-5 text-muted-foreground/70">Claims are not stored or linked to your identity.</p>
+
 
           <div className="mt-9 rounded-xl border border-border bg-card p-5 text-left shadow-[0_4px_18px_oklch(0.21_0.041_250.5/0.05)] sm:p-7">
             <label htmlFor="claim" className="sr-only">Civic claim</label>
