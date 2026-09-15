@@ -99,8 +99,21 @@ function CivicCheck() {
     setIsLoading(true);
 
     try {
-      await new Promise((resolve) => window.setTimeout(resolve, 2500));
-      setResult(mockResult);
+      const apiBaseUrl = import.meta.env["VITE_API_BASE_URL"] as string | undefined;
+      if (!apiBaseUrl && import.meta.env.DEV) {
+        await new Promise((resolve) => window.setTimeout(resolve, 2500));
+        setResult(mockResult);
+      } else {
+        const response = await fetch(`${apiBaseUrl ?? "http://localhost:8000"}/api/verify`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ claim: claimText, has_image: false }),
+        });
+        if (!response.ok) {
+          throw new Error(`Verification request failed with status ${response.status}`);
+        }
+        setResult((await response.json()) as VerificationResult);
+      }
       resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch {
       setError("We could not retrieve evidence for this claim. Please try rephrasing or check your connection.");
