@@ -303,7 +303,9 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
             </article>
           ))}
         </div>
+        )}
       </ResultSection>
+
 
       <ResultSection title="What you can do">
         <div className="space-y-3">{result.next_steps.map((step) => <p key={step}>{step}</p>)}</div>
