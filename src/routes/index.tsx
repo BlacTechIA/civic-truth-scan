@@ -300,8 +300,8 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
       ) : null}
 
 
-      <ResultSection title="What the evidence shows"><p>{result.summary}</p></ResultSection>
-      <ResultSection title="Why this assessment"><p>{result.why}</p></ResultSection>
+      <ResultSection title="What the evidence shows"><p className="text-[#4A5568]">{result.summary}</p></ResultSection>
+      <ResultSection title="Why this assessment"><p className="text-[#4A5568]">{result.why}</p></ResultSection>
 
       <ResultSection title="Sources examined">
         {compact ? (
@@ -335,7 +335,7 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
 
 
       <ResultSection title="What you can do">
-        <div className="space-y-3">{result.next_steps.map((step) => <p key={step}>{step}</p>)}</div>
+        <div className="space-y-3">{result.next_steps.map((step) => <p key={step} className="text-[#4A5568]">{step}</p>)}</div>
       </ResultSection>
 
       <div className="mt-10 border-t border-border pt-6 text-center">
