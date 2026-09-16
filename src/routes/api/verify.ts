@@ -42,6 +42,7 @@ JSON structure:
   "summary": "2 to 3 sentence plain language explanation of what the evidence shows",
   "why": "2 to 3 sentence reasoning behind the assessment",
   "confidence_context": "High | Medium | Low",
+  "country_context": "the country this claim relates to, as a full name e.g. Nigeria, Kenya, South Africa. If pan-African or unclear, use Africa.",
   "sources": [
     {
       "title": "string",

@@ -12,6 +12,7 @@ type VerificationResult = {
   summary: string;
   why: string;
   confidence_context: string;
+  country_context?: string;
   assessed_at: string;
   sources: Array<{
     title: string;
