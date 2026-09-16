@@ -300,15 +300,15 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
       ) : null}
 
 
-      <ResultSection title="What the evidence shows"><p className="text-[#4A5568]">{result.summary}</p></ResultSection>
-      <ResultSection title="Why this assessment"><p className="text-[#4A5568]">{result.why}</p></ResultSection>
+      <ResultSection title="What the evidence shows"><p className="!text-[#4A5568]">{result.summary}</p></ResultSection>
+      <ResultSection title="Why this assessment"><p className="!text-[#4A5568]">{result.why}</p></ResultSection>
 
       <ResultSection title="Sources examined">
         {compact ? (
           <div className="space-y-2">
             {result.sources.map((source) => (
-              <p key={`${source.publisher}-${source.title}`} className="text-sm leading-6 text-[#4A5568]">
-                {source.publisher}. {source.evidence_summary}
+              <p key={`${source.publisher}-${source.title}`} className="text-sm leading-6">
+                <span>{source.publisher}.</span>{" "}<span className="!text-[#4A5568]">{source.evidence_summary}</span>
               </p>
             ))}
           </div>
@@ -326,7 +326,7 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
               ) : <p className="mt-1 text-[15px] text-foreground">{source.title}</p>}
               {source.published_at ? <p className="mt-1 text-xs text-muted-foreground/70">Published {source.published_at}</p> : null}
               <p className="mt-2 text-sm italic leading-6 text-[#4A5568]">{source.relevance}</p>
-              <p className="mt-1 text-sm leading-6 text-[#4A5568]">{source.evidence_summary}</p>
+               <p className="mt-1 text-sm leading-6 !text-[#4A5568]">{source.evidence_summary}</p>
             </article>
           ))}
         </div>
@@ -335,7 +335,7 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
 
 
       <ResultSection title="What you can do">
-        <div className="space-y-3">{result.next_steps.map((step) => <p key={step} className="text-[#4A5568]">{step}</p>)}</div>
+        <div className="space-y-3">{result.next_steps.map((step) => <p key={step} className="!text-[#4A5568]">{step}</p>)}</div>
       </ResultSection>
 
       <div className="mt-10 border-t border-border pt-6 text-center">
