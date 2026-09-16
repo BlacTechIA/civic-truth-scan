@@ -167,9 +167,9 @@ async function searchEvidence(normalizedClaim: string, countryCode: string): Pro
           }
         })(),
       }));
-    return items.length > 0 ? items : fallbackEvidence;
+    return items.length > 0 ? items : fallback;
   } catch {
-    return fallbackEvidence;
+    return fallback;
   }
 }
 
@@ -208,10 +208,11 @@ export const Route = createFileRoute("/api/verify")({
           });
         }
 
-        let normalizedClaim: string;
+        let normalizedClaim = "";
+        let countryCode = "NG";
         try {
           if (imageBase64) {
-            normalizedClaim = await callAnthropic(
+            const raw = await callAnthropic(
               NORMALIZER_PROMPT,
               [
                 {
@@ -225,15 +226,21 @@ export const Route = createFileRoute("/api/verify")({
               ],
               200,
             );
+            const parsed = parseNormalization(raw);
+            normalizedClaim = parsed.claim;
+            countryCode = parsed.countryCode;
           } else {
-            normalizedClaim = await callAnthropic(NORMALIZER_PROMPT, claim, 200);
+            const raw = await callAnthropic(NORMALIZER_PROMPT, claim, 200);
+            const parsed = parseNormalization(raw);
+            normalizedClaim = parsed.claim;
+            countryCode = parsed.countryCode;
           }
         } catch {
           return unavailable();
         }
 
 
-        const evidence = await searchEvidence(normalizedClaim);
+        const evidence = await searchEvidence(normalizedClaim, countryCode);
 
         let assessment: Record<string, unknown>;
         try {
