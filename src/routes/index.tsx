@@ -12,6 +12,7 @@ type VerificationResult = {
   summary: string;
   why: string;
   confidence_context: string;
+  country_context?: string;
   assessed_at: string;
   sources: Array<{
     title: string;
@@ -31,6 +32,7 @@ const mockResult: VerificationResult = {
   summary: "The claim contains a true element but omits important context that changes how it should be understood. The federal government did announce changes to the fuel subsidy structure, but the effective date and scope described in the circulated claim do not match what official documents state.",
   why: "Official publications from the Nigerian Midstream and Downstream Petroleum Regulatory Authority and statements published on the Federal Ministry of Finance website describe a phased adjustment, not an immediate blanket removal. The date cited in the claim is not confirmed in any government release found in the evidence set.",
   confidence_context: "Medium",
+  country_context: "Nigeria",
   assessed_at: "2026-09-14T10:30:00Z",
   sources: [
     { title: "NMDPRA Statement on Petroleum Pricing Framework", publisher: "Nigerian Midstream and Downstream Petroleum Regulatory Authority", source_type: "Primary", published_at: "2026-09-10", url: null, relevance: "Official regulatory body responsible for downstream petroleum pricing", evidence_summary: "The statement describes a phased pricing adjustment framework with no single removal date specified" },
@@ -288,7 +290,7 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
     <div>
       <div className={`border-l-4 px-6 py-5 ${verdictClasses[result.assessment]}`}>
         <p className="font-display text-[28px] leading-tight">{verdictLabels[result.assessment]}</p>
-        <p className="mt-2 text-sm text-secondary-foreground/80">Based on evidence retrieved from Nigerian sources</p>
+        <p className="mt-2 text-sm text-secondary-foreground/80">Based on evidence retrieved from {result.country_context ?? "African"} sources</p>
       </div>
 
       {result.assessment === "UNVERIFIABLE" ? (
@@ -298,8 +300,8 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
       ) : null}
 
 
-      <ResultSection title="What the evidence shows"><p>{result.summary}</p></ResultSection>
-      <ResultSection title="Why this assessment"><p>{result.why}</p></ResultSection>
+      <ResultSection title="What the evidence shows"><p className="text-[#4A5568]">{result.summary}</p></ResultSection>
+      <ResultSection title="Why this assessment"><p className="text-[#4A5568]">{result.why}</p></ResultSection>
 
       <ResultSection title="Sources examined">
         {compact ? (
@@ -333,7 +335,7 @@ function Results({ result, onReset, compact }: { result: VerificationResult; onR
 
 
       <ResultSection title="What you can do">
-        <div className="space-y-3">{result.next_steps.map((step) => <p key={step}>{step}</p>)}</div>
+        <div className="space-y-3">{result.next_steps.map((step) => <p key={step} className="text-[#4A5568]">{step}</p>)}</div>
       </ResultSection>
 
       <div className="mt-10 border-t border-border pt-6 text-center">
