@@ -198,8 +198,8 @@ function CivicCheck() {
         <div className="mx-auto w-full max-w-[820px] text-center">
           <h1 id="page-heading" className="font-display text-4xl font-normal leading-tight sm:text-[52px]">What have you heard?</h1>
           <p className="mx-auto mt-5 max-w-[520px] text-lg leading-7 text-secondary-foreground/80">Paste a civic claim or upload a screenshot. We search the evidence so you can decide what to trust.</p>
-          <p className="mx-auto mt-3 max-w-[520px] text-sm leading-6 text-muted-foreground">You can submit claims in English, Pidgin, Hausa, Yoruba, or Igbo.</p>
-          <p className="mx-auto mt-2 max-w-[520px] text-xs leading-5 text-muted-foreground/70">Claims are not stored or linked to your identity.</p>
+          <p className="mx-auto mt-3 max-w-[520px] text-sm leading-6 text-muted-foreground">You can submit claims in English, Pidgin, Hausa, Yoruba, Igbo, or Swahili.</p>
+          <p className="mx-auto mt-2 max-w-[520px] text-xs leading-5 text-muted-foreground/70">Claims are not stored or linked to your identity. Available for Nigeria and Kenya.</p>
 
 
           <div className="mt-9 rounded-xl border border-border bg-card p-5 text-left shadow-[0_4px_18px_oklch(0.21_0.041_250.5/0.05)] sm:p-7">

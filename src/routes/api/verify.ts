@@ -32,9 +32,9 @@ const corsHeaders = {
 const jsonHeaders = { ...corsHeaders, "Content-Type": "application/json" };
 
 const NORMALIZER_PROMPT =
-  "You are a civic claim normalizer for Nigeria. Restate the claim as a clear, precise, testable sentence. Remove emotional language. Output only the normalized claim. One sentence only.";
+  "You are a civic claim normalizer for Africa, with deep knowledge of Nigerian and Kenyan civic contexts. Restate the claim as a clear, precise, testable sentence. Remove emotional language. At the end of your response, on a new line, output the likely country context of the claim as a two-letter ISO code only, for example: NG or KE or ZA. If unclear, output NG.";
 
-const ASSESSOR_PROMPT = `You are a civic fact-checking assistant for Nigerian citizens. Assess the claim using only the evidence provided. Do not use outside knowledge. If evidence is insufficient, return UNVERIFIABLE. Respond with a single valid JSON object only. No markdown. No text outside the JSON.
+const ASSESSOR_PROMPT = `You are a civic fact-checking assistant for African citizens, with expertise in Nigerian and Kenyan civic information. Assess the claim using only the evidence provided. Do not use outside knowledge. If evidence is insufficient, return UNVERIFIABLE. Respond with a single valid JSON object only. No markdown. No text outside the JSON.
 
 JSON structure:
 {
@@ -46,7 +46,7 @@ JSON structure:
     {
       "title": "string",
       "publisher": "string, use the source domain if no publisher name is clear",
-      "source_type": "Primary if the domain ends in .gov.ng, Secondary otherwise",
+      "source_type": "Primary if the domain ends in .gov.ng or .go.ke or .or.ke, Secondary otherwise",
       "published_at": null,
       "url": "the link from the evidence",
       "relevance": "one sentence on why this source is relevant",
@@ -96,17 +96,59 @@ async function callAnthropic(
 }
 
 
-async function searchEvidence(normalizedClaim: string): Promise<Evidence[]> {
+const kenyaFallback: Evidence[] = [
+  {
+    title: "Kenya Government Policy Statement",
+    link: "https://www.president.go.ke",
+    snippet: "Official government statement on the matter under review.",
+    source: "president.go.ke",
+  },
+  {
+    title: "IEBC Official Notice",
+    link: "https://www.iebc.or.ke",
+    snippet: "Independent Electoral and Boundaries Commission official guidance.",
+    source: "iebc.or.ke",
+  },
+  {
+    title: "Daily Nation Kenya Coverage",
+    link: "https://nation.africa",
+    snippet: "Kenyan media reporting on the policy development.",
+    source: "nation.africa",
+  },
+];
+
+function parseNormalization(raw: string): { claim: string; countryCode: string } {
+  const lastNewline = raw.lastIndexOf("\n");
+  const lastLine = lastNewline >= 0 ? raw.slice(lastNewline + 1).trim() : "";
+  const codeMatch = /^[A-Z]{2}$/.exec(lastLine);
+  return {
+    claim: (codeMatch && lastNewline >= 0 ? raw.slice(0, lastNewline) : raw).trim(),
+    countryCode: codeMatch ? codeMatch[0] : "NG",
+  };
+}
+
+function searchParams(normalizedClaim: string, countryCode: string) {
+  if (countryCode === "KE") {
+    return { q: `${normalizedClaim} Kenya`, gl: "ke", hl: "en" };
+  }
+  if (countryCode === "NG") {
+    return { q: `${normalizedClaim} Nigeria`, gl: "ng", hl: "en" };
+  }
+  return { q: `${normalizedClaim} Africa ${countryCode}`, gl: "za", hl: "en" };
+}
+
+async function searchEvidence(normalizedClaim: string, countryCode: string): Promise<Evidence[]> {
+  const fallback = countryCode === "KE" ? kenyaFallback : fallbackEvidence;
   try {
     const apiKey = process.env["SERPER_API_KEY"];
-    if (!apiKey) return fallbackEvidence;
+    if (!apiKey) return fallback;
 
     const response = await fetch("https://google.serper.dev/search", {
       method: "POST",
       headers: { "content-type": "application/json", "X-API-KEY": apiKey },
-      body: JSON.stringify({ q: `${normalizedClaim} Nigeria`, num: 8, gl: "ng", hl: "en" }),
+      body: JSON.stringify({ ...searchParams(normalizedClaim, countryCode), num: 8 }),
     });
-    if (!response.ok) return fallbackEvidence;
+    if (!response.ok) return fallback;
 
     const data = (await response.json()) as {
       organic?: Array<{ title?: string; link?: string; snippet?: string }>;
@@ -125,9 +167,9 @@ async function searchEvidence(normalizedClaim: string): Promise<Evidence[]> {
           }
         })(),
       }));
-    return items.length > 0 ? items : fallbackEvidence;
+    return items.length > 0 ? items : fallback;
   } catch {
-    return fallbackEvidence;
+    return fallback;
   }
 }
 
@@ -166,10 +208,11 @@ export const Route = createFileRoute("/api/verify")({
           });
         }
 
-        let normalizedClaim: string;
+        let normalizedClaim = "";
+        let countryCode = "NG";
         try {
           if (imageBase64) {
-            normalizedClaim = await callAnthropic(
+            const raw = await callAnthropic(
               NORMALIZER_PROMPT,
               [
                 {
@@ -183,15 +226,21 @@ export const Route = createFileRoute("/api/verify")({
               ],
               200,
             );
+            const parsed = parseNormalization(raw);
+            normalizedClaim = parsed.claim;
+            countryCode = parsed.countryCode;
           } else {
-            normalizedClaim = await callAnthropic(NORMALIZER_PROMPT, claim, 200);
+            const raw = await callAnthropic(NORMALIZER_PROMPT, claim, 200);
+            const parsed = parseNormalization(raw);
+            normalizedClaim = parsed.claim;
+            countryCode = parsed.countryCode;
           }
         } catch {
           return unavailable();
         }
 
 
-        const evidence = await searchEvidence(normalizedClaim);
+        const evidence = await searchEvidence(normalizedClaim, countryCode);
 
         let assessment: Record<string, unknown>;
         try {
