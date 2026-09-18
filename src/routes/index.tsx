@@ -64,12 +64,18 @@ const verdictClasses: Record<Assessment, string> = {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CivicCheck NG | Verify civic claims" },
-      { name: "description", content: "Check civic claims against evidence from trusted Nigerian sources." },
-      { property: "og:title", content: "CivicCheck NG | Verify civic claims" },
-      { property: "og:description", content: "Check civic claims against evidence from trusted Nigerian sources." },
+      { title: "CivicCheck NG — Civic Claim Verification for Nigeria and Kenya" },
+      { name: "description", content: "CivicCheck NG helps Nigerian and Kenyan citizens verify civic claims in seconds. Paste a claim or upload a WhatsApp screenshot and the system searches live evidence from credible African sources, returning a verdict of True, False, Misleading, or Unverifiable with cited sources and next steps. Supports English, Pidgin, Hausa, Yoruba, Igbo, and Swahili." },
+      { property: "og:title", content: "CivicCheck NG — Civic Claim Verification for Nigeria and Kenya" },
+      { property: "og:description", content: "Verify civic claims in seconds. Paste a claim or upload a screenshot. CivicCheck NG searches live Nigerian and Kenyan sources and returns a structured verdict with cited evidence." },
+      { property: "og:url", content: "https://civictruth.lovable.app" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "CivicCheck NG — Civic Claim Verification for Nigeria and Kenya" },
+      { name: "twitter:description", content: "Verify civic claims in seconds. Paste a claim or upload a screenshot. Supports English, Pidgin, Hausa, Yoruba, Igbo, and Swahili." },
+    ],
+    links: [
+      { rel: "canonical", href: "https://civictruth.lovable.app" },
     ],
   }),
   component: CivicCheck,
