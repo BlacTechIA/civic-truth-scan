@@ -77,13 +77,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CivicCheck NG" },
-      { name: "description", content: "Verify civic claims using evidence from trusted Nigerian sources." },
+      { title: "CivicCheck NG — Civic Claim Verification for Nigeria and Kenya" },
+      { name: "description", content: "CivicCheck NG helps Nigerian and Kenyan citizens verify civic claims in seconds. Paste a claim or upload a WhatsApp screenshot and the system searches live evidence from credible African sources, returning a verdict of True, False, Misleading, or Unverifiable with cited sources and next steps. Supports English, Pidgin, Hausa, Yoruba, Igbo, and Swahili." },
       { name: "author", content: "CivicCheck NG" },
-      { property: "og:title", content: "CivicCheck NG" },
-      { property: "og:description", content: "Verify civic claims using evidence from trusted Nigerian sources." },
+      { property: "og:title", content: "CivicCheck NG — Civic Claim Verification for Nigeria and Kenya" },
+      { property: "og:description", content: "Verify civic claims in seconds. Paste a claim or upload a screenshot. CivicCheck NG searches live Nigerian and Kenyan sources and returns a structured verdict with cited evidence." },
+      { property: "og:url", content: "https://civictruth.lovable.app" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "CivicCheck NG — Civic Claim Verification for Nigeria and Kenya" },
+      { name: "twitter:description", content: "Verify civic claims in seconds. Paste a claim or upload a screenshot. Supports English, Pidgin, Hausa, Yoruba, Igbo, and Swahili." },
     ],
     links: [
       {
